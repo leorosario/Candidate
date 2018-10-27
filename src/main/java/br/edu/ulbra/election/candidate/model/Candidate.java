@@ -13,27 +13,11 @@ public class Candidate {
     @Column(nullable = false)
     private Long partyId;
 
-    @Column(nullable = false)
-    private Long numberELection;
+    @Column(nullable = false, name = "number")
+    private Long numberElection;
 
     @Column(nullable = false)
     private Long electionId;
-
-    public Long getPartyId() {
-        return partyId;
-    }
-
-    public void setPartyId(Long partyId) {
-        this.partyId = partyId;
-    }
-
-    public Long getElectionId() {
-        return electionId;
-    }
-
-    public void setElectionId(Long electionId) {
-        this.electionId = electionId;
-    }
 
     public Long getId() {
         return id;
@@ -51,11 +35,27 @@ public class Candidate {
         this.name = name;
     }
 
-    public Long getNumberELection() {
-        return numberELection;
+    public Long getNumberElection() {
+        return numberElection;
     }
 
-    public void setNumberELection(Long numberELection) {
-        this.numberELection = numberELection;
+    public Long getPartyId() {
+        return partyId;
+    }
+
+    public void setPartyId(Long partyId) {
+        this.partyId = partyId;
+    }
+
+    public Long getElectionId() {
+        return electionId;
+    }
+
+    public void setElectionId(Long electionId) {
+        this.electionId = electionId;
+    }
+
+    public void setNumberElection(Long numberElection) {
+        this.numberElection = numberElection;
     }
 }

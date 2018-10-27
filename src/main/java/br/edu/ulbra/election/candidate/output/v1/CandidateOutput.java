@@ -12,10 +12,31 @@ public class CandidateOutput {
     private String name;
     @ApiModelProperty(example = "77654", notes = "Candidate Election Number")
     private Long numberElection;
-    @ApiModelProperty(notes = "Candidate Election Data")
+    @ApiModelProperty(example = "2", notes = "Candidate Election id")
+    private Long electionId;
+
+    public Long getElectionId() {
+        return electionId;
+    }
+
+    public void setElectionId(Long electionId) {
+        this.electionId = electionId;
+    }
+
+    public Long getPartyId() {
+        return partyId;
+    }
+
+    public void setPartyId(Long partyId) {
+        this.partyId = partyId;
+    }
+
+    @ApiModelProperty(example = "3", notes = "Candidate Party id")
+    private Long partyId;
+    /*@ApiModelProperty(notes = "Candidate Election Data")
     private ElectionOutput electionOutput;
     @ApiModelProperty(notes = "Candidate Party Data")
-    private PartyOutput partyOutput;
+    private PartyOutput partyOutput;*/
 
     public String getName() {
         return name;
@@ -33,7 +54,7 @@ public class CandidateOutput {
         this.numberElection = numberElection;
     }
 
-    public ElectionOutput getElectionOutput() {
+    /*public ElectionOutput getElectionOutput() {
         return electionOutput;
     }
 
@@ -47,5 +68,5 @@ public class CandidateOutput {
 
     public void setPartyOutput(PartyOutput partyOutput) {
         this.partyOutput = partyOutput;
-    }
+    }*/
 }

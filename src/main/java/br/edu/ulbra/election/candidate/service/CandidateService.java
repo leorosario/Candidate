@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
@@ -37,6 +36,7 @@ public class CandidateService {
 
     public CandidateOutput create(CandidateInput candidateInput) {
         validateInput(candidateInput, false);
+        modelMapper.getConfiguration().setAmbiguityIgnored(true);
         Candidate candidate = modelMapper.map(candidateInput, Candidate.class);
         candidate = candidateRepository.save(candidate);
         return modelMapper.map(candidate, CandidateOutput.class);
@@ -68,7 +68,7 @@ public class CandidateService {
 
         candidate.setPartyId(candidateInput.getPartyId());
         candidate.setName(candidateInput.getName());
-        candidate.setNumberELection(candidateInput.getNumberElection());
+        candidate.setNumberElection(candidateInput.getNumberElection());
         candidate.setElectionId(candidateInput.getElectionId());
 
         candidate = candidateRepository.save(candidate);
