@@ -91,9 +91,16 @@ public class CandidateService {
     }
 
     private void validateInput(CandidateInput candidateInput, boolean isUpdate){
-
+        String [] palavras;
         if (StringUtils.isBlank(candidateInput.getName())){
             throw new GenericOutputException("Invalid name");
+        }
+        if(candidateInput.getName().length() < 5){
+            throw new GenericOutputException("Invalid name. Name must be at least 5 characters.");
+        }
+        palavras = candidateInput.getName().split(" ");
+        if( palavras.length < 2){
+            throw new GenericOutputException("Invalid name. The name must have at least one last name.");
         }
         if (candidateInput.getPartyId() == null){
             throw new GenericOutputException("Invalid Party");
