@@ -1,8 +1,10 @@
 package br.edu.ulbra.election.candidate.model;
+
 import javax.persistence.*;
 
 @Entity
 public class Candidate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -11,13 +13,13 @@ public class Candidate {
     private String name;
 
     @Column(nullable = false)
-    private Long partyId;
-
-    @Column(nullable = false, name = "number")
     private Long numberElection;
 
     @Column(nullable = false)
     private Long electionId;
+
+    @Column(nullable = false)
+    private Long partyId;
 
     public Long getId() {
         return id;
@@ -39,12 +41,8 @@ public class Candidate {
         return numberElection;
     }
 
-    public Long getPartyId() {
-        return partyId;
-    }
-
-    public void setPartyId(Long partyId) {
-        this.partyId = partyId;
+    public void setNumberElection(Long numberElection) {
+        this.numberElection = numberElection;
     }
 
     public Long getElectionId() {
@@ -55,7 +53,12 @@ public class Candidate {
         this.electionId = electionId;
     }
 
-    public void setNumberElection(Long numberElection) {
-        this.numberElection = numberElection;
+    public Long getPartyId() {
+        return partyId;
     }
+
+    public void setPartyId(Long partyId) {
+        this.partyId = partyId;
+    }
+
 }
