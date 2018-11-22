@@ -21,10 +21,18 @@ public class ElectionClientService {
         return this.electionClient.getById(id);
     }
 
+    public Integer getVoteNumberByElectionId(Long id) {
+        return this.electionClient.getVoteNumberByElectionId(id);
+    }
+
     @FeignClient(value="election-service", url="${url.election-service}")
     private interface ElectionClient {
 
         @GetMapping("/v1/election/{electionId}")
         ElectionOutput getById(@PathVariable(name = "electionId") Long electionId);
+
+        @GetMapping("/v1/vote/number/{electionId}")
+        Integer getVoteNumberByElectionId(@PathVariable(name = "electionId") Long electionId);
+
     }
 }
