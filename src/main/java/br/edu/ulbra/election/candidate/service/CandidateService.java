@@ -42,7 +42,21 @@ public class CandidateService {
 
     public List<CandidateOutput> getAll() {
         List<Candidate> candidateList = (List<Candidate>) candidateRepository.findAll();
-        return candidateList.stream().map(this::toCandidateOutput).collect(Collectors.toList());
+        List<CandidateOutput> candidateOutputList = candidateList.stream().map(this::toCandidateOutput).collect(Collectors.toList());
+        for(int i = 0; i < candidateOutputList.size(); i++){
+            try {
+                PartyOutput partyOutput = partyClientService.getById(candidateList.get(i).getPartyId());
+                ElectionOutput electionOutput = electionClientService.getById(candidateList.get(i).getElectionId());
+
+                candidateOutputList.get(i).setPartyOutput(partyOutput);
+                candidateOutputList.get(i).setElectionOutput(electionOutput);
+            } catch (FeignException e) {
+                if (e.status() == 500) {
+                    throw new GenericOutputException("Invalid Party or Election");
+                }
+            }
+        }
+        return candidateOutputList;
     }
 
     public CandidateOutput create(CandidateInput candidateInput) {
@@ -62,8 +76,20 @@ public class CandidateService {
         if (candidate == null) {
             throw new GenericOutputException(MESSAGE_CANDIDATE_NOT_FOUND);
         }
+        CandidateOutput candidateOutput = modelMapper.map(candidate, CandidateOutput.class);
+        try {
+            PartyOutput partyOutput = partyClientService.getById(candidate.getPartyId());
+            ElectionOutput electionOutput = electionClientService.getById(candidate.getElectionId());
 
-        return modelMapper.map(candidate, CandidateOutput.class);
+            candidateOutput.setPartyOutput(partyOutput);
+            candidateOutput.setElectionOutput(electionOutput);
+        } catch (FeignException e) {
+            if (e.status() == 500) {
+                throw new GenericOutputException("Invalid Party or Election");
+            }
+        }
+
+        return candidateOutput;
     }
 
     public CandidateOutput update(Long candidateId, CandidateInput candidateInput) {
