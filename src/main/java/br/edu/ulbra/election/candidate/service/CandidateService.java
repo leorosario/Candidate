@@ -5,10 +5,7 @@ import br.edu.ulbra.election.candidate.client.PartyClientService;
 import br.edu.ulbra.election.candidate.exception.GenericOutputException;
 import br.edu.ulbra.election.candidate.input.v1.CandidateInput;
 import br.edu.ulbra.election.candidate.model.Candidate;
-import br.edu.ulbra.election.candidate.output.v1.CandidateOutput;
-import br.edu.ulbra.election.candidate.output.v1.ElectionOutput;
-import br.edu.ulbra.election.candidate.output.v1.GenericOutput;
-import br.edu.ulbra.election.candidate.output.v1.PartyOutput;
+import br.edu.ulbra.election.candidate.output.v1.*;
 import br.edu.ulbra.election.candidate.repository.CandidateRepository;
 import feign.FeignException;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.Result;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +41,7 @@ public class CandidateService {
     public List<CandidateOutput> getAll() {
         List<Candidate> candidateList = (List<Candidate>) candidateRepository.findAll();
         List<CandidateOutput> candidateOutputList = candidateList.stream().map(this::toCandidateOutput).collect(Collectors.toList());
-        for(int i = 0; i < candidateOutputList.size(); i++){
+        for (int i = 0; i < candidateOutputList.size(); i++) {
             try {
                 PartyOutput partyOutput = partyClientService.getById(candidateList.get(i).getPartyId());
                 ElectionOutput electionOutput = electionClientService.getById(candidateList.get(i).getElectionId());
@@ -104,7 +102,7 @@ public class CandidateService {
             throw new GenericOutputException(MESSAGE_CANDIDATE_NOT_FOUND);
         }
 
-        checkElectionVote(candidate.getElectionId());
+        checkElectionVotes(candidate.getElectionId());
 
         candidate.setElectionId(candidateInput.getElectionId());
         candidate.setNumberElection(candidateInput.getNumberElection());
@@ -123,16 +121,16 @@ public class CandidateService {
         if (candidate == null) {
             throw new GenericOutputException(MESSAGE_CANDIDATE_NOT_FOUND);
         }
-        checkElectionVote(candidate.getElectionId());
+        checkElectionVotes(candidate.getElectionId());
         candidateRepository.delete(candidate);
 
         return new GenericOutput("Candidate deleted");
     }
 
-    private void checkElectionVote(Long id) {
+    private void checkElectionVotes(Long id) {
         try {
-            Integer votes = electionClientService.getVoteNumberByElectionId(id);
-            if (votes > 0) {
+            Long totalVotes = electionClientService.getResultByElectionId(id).getTotalVotes();
+            if (totalVotes > 0) {
                 throw new GenericOutputException("This election already has votes");
             }
         } catch (FeignException e) {
@@ -144,7 +142,7 @@ public class CandidateService {
 
     private void validateDuplicate(CandidateInput candidateInput, Long candidateId) {
         Candidate candidate = candidateRepository.findFirstByNumberElectionAndAndElectionId(candidateInput.getNumberElection(), candidateInput.getElectionId());
-        if (candidate != null && candidate.getId() != candidateId) {
+        if (candidate != null && !candidate.getId().equals(candidateId)) {
             throw new GenericOutputException("Duplicate Candidate!");
         }
     }
